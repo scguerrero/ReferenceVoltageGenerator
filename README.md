@@ -9,6 +9,7 @@ Reference Voltage Generator is a set of programs in which a user can enter volta
 *Figure 1. Graphical user interface.*
 
 ## Initiating Serial Communication
+[Jump to Top](#reference-voltage-generator)
 
 ![Dropdown menus for COM port, baud rate, and initiating connection](images/figure2.png)
 *Figure 2. Dropdown menus for COM port, baud rate, and initiating connection.*
@@ -20,6 +21,7 @@ The user can also select a baud rate from the next dropdown menu. Available baud
 After the user selects a COM Port and Baud Rate and clicks the Connect button, the application will attempt to connect to the target device with the selected settings. The user should troubleshoot by verifying that their COM Port and Baud Rate selections are correct, disconnecting and reconnecting their device to the port, and checking if their cable is “charge-only.” A cable designed only for charging battery is not the same as a cable meant for data transfer, which is the type of cable required for serial communication.
 
 ## Entering Voltage Values
+[Jump to Top](#reference-voltage-generator)
 
 The user can enter values for twelve channels, numbered Channels 0–11. Figure 3 shows Channels 0–1. The user can enter voltage values within the range of 0.0000 to 5.0000 volts. If the user tries to enter an out-of-bounds value, it will automatically be clamped within range. A value of –1 will be forced to 0 and a value of 5.9999 will be forced to 5.0000. The value can be increased or decreased by 100 microvolts at a time by clicking the Arrow-Up and Arrow-Down buttons next to the corresponding voltage entry.
 
@@ -34,6 +36,7 @@ Figure 3 also shows ON/OFF and UPDATE buttons. The ON/OFF button is a two-state 
 In Figure 4, below Channel 11, there are three buttons, All OFF, All ON, and All UPDATE. The first toggles the OFF state for each ON/OFF button and the second toggles the ON state. The application sends one command at a time to power off each DAC, starting from DAC 0.
 
 ## SPI Communication
+[Jump to Top](#reference-voltage-generator)
 
 In Figure 5, the user can enter three bytes of data in hexadecimal format. They can choose to send the first byte, the first and second byte, or all three bytes. The application was tested to send user-inputted bytes through the Feather to an Arduino Nano via SPI. It was also tested to receive bytes from the Nano, through the Feather, and display the received bytes on the application window. The text will read “Nothing received” until bytes arrive at the Feather’s serial port from the Nano.
 
