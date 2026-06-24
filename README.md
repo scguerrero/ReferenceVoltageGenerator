@@ -7,6 +7,7 @@
 - [How to Cross-Compile on Linux](#how-to-cross-compile-on-linux)
 - [How to Upload Sketch to Adafruit Feather](#how-to-upload-sketch-to-adafruit-feather)
 - [How to Upload Sketch to Arduino Nano](#how-to-upload-sketch-to-arduino-nano)
+- [Known Issues](#known-issues)
 
 Reference Voltage Generator is a set of programs in which a user can enter voltage values to a graphical user interface (GUI) and a microcontroller responds to GUI events by sending those voltage values to digital-to-analog converters (DACs). The GUI application in Figure 1 was developed on Linux in C using GTK4. It can be cross-compiled to Windows using Linux as the host machine. The precompiled Windows executable is also available. The GUI was designed to communicate with an Adafruit Feather ESP32-S3 Reverse TFT. The Feather application parses commands received from the GUI and determines if the command intends to send a voltage value to one of the DACs via I2C, or if the command is meant to send bytes to another microcontroller via SPI.
 
@@ -151,5 +152,10 @@ Arduino IDE should work without issue on Linux when uploading sketches to Arduin
 
 Open the file `spi_nano.ino` with Arduino IDE and, if applicable, allow the IDE to automatically place the `.ino` inside of a new folder. Choose the Arduino Nano in the board/port dropdown menu next to the Verify/Upload/Debug circle icons. Click Verify to check for syntax errors, then click Upload. The Nano will immediately load the new sketch.
 
+## Known Issues
+[Jump to Top](#reference-voltage-generator)
 
-
+Open a "New Issue" at the top of the page if something is not covered here.
+- Options to choose **one** of **four** SPI modes
+- If the first one or two hex byte entry boxes are left blank, the GUI will send a command with blanks that the Feather cannot parse
+- Windows executable DLLs should be statically linked to create a selfcontained executable
