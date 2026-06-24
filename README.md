@@ -2,14 +2,12 @@
 - [Initiating Serial Communication](#initiating-serial-communication)
 - [Entering Voltage Values](#entering-voltage-values)
 - [SPI Communication](#spi-communication)
-- [Instructions for Downloading and Executing](#instructions-for-downloading-and-executing)
-- [Graphical User Interface](#graphical-user-interface)
-   - [How to download just the Windows executable](#how-to-download-just-the-windows-executable)
-   - [How to clone the repository](#how-to-clone-the-repository)
-   - [How to compile natively on Linux](#how-to-compile-natively-on-linux)
-   - [How to cross-compile on Linux to create a Windows executable](#how-to-cross-compile-on-linux-to-create-a-windows-executable)
-- [Adafruit Feather ESP32-S3 Reverse TFT](#adafruit-feather-esp32-s3-reverse-tft)
-- [Arduino Nano](#arduino-nano)
+- [How to Clone the Repository](#how-to-clone-the-repository)
+- [How to Run the GUI on Windows](#how-to-run-the-gui-on-windows)
+- [How to Compile Natively on Linux](#how-to-compile-natively-on-linux)
+- [How to Cross-Compile on Linux](#how-to-cross-compile-on-linux)
+- [How to Upload Sketch to Adafruit Feather](#how-to-upload-sketch-to-adafruit-feather)
+- [How to Upload Sketch to Arduino Nano](#how-to-upload-sketch-to-arduino-nano)
 
 Reference Voltage Generator is a set of programs in which a user can enter voltage values to a graphical user interface (GUI) and a microcontroller responds to GUI events by sending those voltage values to digital-to-analog converters (DACs). The GUI application in Figure 1 was developed on Linux in C using GTK4. It can be cross-compiled to Windows using Linux as the host machine. The precompiled Windows executable is also available. The GUI was designed to communicate with an Adafruit Feather ESP32-S3 Reverse TFT. The Feather application parses commands received from the GUI and determines if the command intends to send a voltage value to one of the DACs via I2C, or if the command is meant to send bytes to another microcontroller via SPI.
 
@@ -51,22 +49,23 @@ In Figure 5, the user can enter three bytes of data in hexadecimal format. They 
 ![SPI section of the GUI where the user can send bytes and view received bytes](images/figure5.png)
 *Figure 5. SPI section of the GUI where the user can send bytes and view received bytes.*
 
-## Instructions for Downloading and Executing
+### How to Clone the Repository
+[Jump to Top](#reference-voltage-generator)
 
-### Graphical User Interface
+### How to Run the GUI on Windows
+[Jump to Top](#reference-voltage-generator)
 
-#### How to download just the Windows executable
+### How to Compile Natively on Linux
+[Jump to Top](#reference-voltage-generator)
 
-#### How to clone the repository
+### How to Cross-Compile on Linux
+[Jump to Top](#reference-voltage-generator)
 
-#### How to compile natively on Linux
+### How to Upload Sketch to Adafruit Feather
+[Jump to Top](#reference-voltage-generator)
 
-#### How to cross-compile on Linux to create Windows executable
-
-### Adafruit Feather ESP32-S3 Reverse TFT
-
-### Arduino Nano
-
+### How to Upload Sketch to Arduino Nano
+[Jump to Top](#reference-voltage-generator)
 
 
 
