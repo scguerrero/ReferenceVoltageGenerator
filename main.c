@@ -621,14 +621,14 @@ static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
     
     // Setting up CSS from virtual resource path
-    GtkCssProvider *css_provider = gtk_css_provider_new();
+    /*GtkCssProvider *css_provider = gtk_css_provider_new();
     gtk_css_provider_load_from_resource(css_provider, "/com/example/myresource/style.css");
     GdkDisplay *display = gdk_display_get_default();
     gtk_style_context_add_provider_for_display(
         display,
         GTK_STYLE_PROVIDER(css_provider),
         GTK_STYLE_PROVIDER_PRIORITY_USER
-    );
+    );*/
     
     window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "Reference Voltage Generator");
