@@ -1,8 +1,8 @@
 # Reference Voltage Generator
-1. [Initiating Serial Communication](#initiating-serial-communication)
-2. [Entering Voltage Values](#entering-voltage-values)
-3. [SPI Communication](#spi-communication)
-4. [Instructions for Downloading and Executing](#instructions-for-downloading-and-executing)
+- [Initiating Serial Communication](#initiating-serial-communication)
+- [Entering Voltage Values](#entering-voltage-values)
+- [SPI Communication](#spi-communication)
+- [Instructions for Downloading and Executing](#instructions-for-downloading-and-executing)
 - [Graphical User Interface](#graphical-user-interface)
    - [How to download just the Windows executable](#how-to-download-just-the-windows-executable)
    - [How to clone the repository](#how-to-clone-the-repository)
