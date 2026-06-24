@@ -2,7 +2,6 @@
 - [Initiating Serial Communication](#initiating-serial-communication)
 - [Entering Voltage Values](#entering-voltage-values)
 - [SPI Communication](#spi-communication)
-- [How to Clone the Repository](#how-to-clone-the-repository)
 - [How to Run the GUI on Windows](#how-to-run-the-gui-on-windows)
 - [How to Compile Natively on Linux](#how-to-compile-natively-on-linux)
 - [How to Cross-Compile on Linux](#how-to-cross-compile-on-linux)
@@ -49,17 +48,58 @@ In Figure 5, the user can enter three bytes of data in hexadecimal format. They 
 ![SPI section of the GUI where the user can send bytes and view received bytes](images/figure5.png)
 *Figure 5. SPI section of the GUI where the user can send bytes and view received bytes.*
 
-### How to Clone the Repository
-[Jump to Top](#reference-voltage-generator)
-
 ### How to Run the GUI on Windows
 [Jump to Top](#reference-voltage-generator)
+
+Clone the repository and enter the `windows_app` directory. This directory contains DLLs (Dynamic-Link Libraries) that the Windows executable requires. 
+```
+git clone https://github.com/scguerrero/ReferenceVoltageGenerator.git
+cd ReferenceVoltageGenerator/windows_app
+```
+Open this directory in your file manager and double-click the executable ReferenceVoltageGenerator.exe.
+
 
 ### How to Compile Natively on Linux
 [Jump to Top](#reference-voltage-generator)
 
 ### How to Cross-Compile on Linux
 [Jump to Top](#reference-voltage-generator)
+
+Enter the `quasi-msys2` directory. Open the shell and compile `main.c` inside the environment.
+```
+env/shell.sh # Open the shell
+
+# Cross-compile the executable named ReferenceVoltageGenerator.exe
+x86_64-w64-mingw32-gcc main.c -o ReferenceVoltageGenerator.exe `pkg-config --cflags --libs gtk4`
+
+# Check that the exe was created by looking at the list of files
+ls
+```
+
+Create a new directory, *not* inside `quasi-msys2`, called `windows_app` (any name will work as long as it indicates that it's for Windows). Copy the Windows executable you just created to this new directory. Copy the Windows DLLs (Dynamic-Link Libraries) to this new directory as well.
+
+```
+# In a different directory that isn't quasi-msys2
+mkdir windows_app
+
+# Copy the exe to the new directory
+# IMPORTANT: Adjust path to where your quasi-msys2 directory is located on your computer
+cp /path/to/quasi-msys2/ReferenceVoltageGenerator.exe /path/to/windows_app/
+
+# Copy the DLLs to the new directory
+cp -r /path/to/quasi-msys2/root/ucrt64/bin/ /path/to/windows_app/
+```
+
+To test the Windows executable on Linux, use Wine to run it.
+
+```
+cd windows_app
+
+# Set Wine display and language settings to avoid seeing corrupted fonts in the GUI
+PANGOCAIRO_BACKEND=fc LANG=en_US.UTF-8 wine ReferenceVoltageGenerator.exe
+```
+
+If it runs with readable fonts, then it is safe to run natively on Windows. Always run the Windows executable inside the folder with the DLLs. It will fail to execute if it does not have access to them. The author is aware of this issue and will update this section when she fixes it.
 
 ### How to Upload Sketch to Adafruit Feather
 [Jump to Top](#reference-voltage-generator)
