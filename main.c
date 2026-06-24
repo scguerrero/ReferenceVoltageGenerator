@@ -430,6 +430,25 @@ static gboolean on_serial_data_available(GIOChannel *source, GIOCondition condit
 #endif
 
 #ifdef _WIN32
+
+// Forward-declare the payload struct at file scope so both functions can see it
+typedef struct {
+    int index;
+    unsigned int val;
+} UpdatePayload;
+
+// Named idle callback — replaces the C++ lambda
+static gboolean update_rx_label_cb(gpointer data) {
+    UpdatePayload *p = (UpdatePayload *)data;
+    if (global_rx_widgets) {
+        char markup[64];
+        snprintf(markup, sizeof(markup), "<b>0x%02X</b>", p->val);
+        gtk_label_set_markup(GTK_LABEL(global_rx_widgets->received_labels[p->index]), markup);
+    }
+    g_free(p);
+    return FALSE; // Run once
+}
+
 // Structure to pass connection info to the thread
 typedef struct {
     HANDLE hPort;
@@ -446,7 +465,6 @@ static gpointer windows_serial_thread_func(gpointer user_data) {
     int byte_index = 0;
 
     while (TRUE) {
-        // ReadFile will block based on your set COMMTIMEOUTS
         if (ReadFile(hPort, rx_buf, sizeof(rx_buf) - 1, &bytes_read, NULL) && bytes_read > 0) {
             rx_buf[bytes_read] = '\0';
 
@@ -454,27 +472,13 @@ static gpointer windows_serial_thread_func(gpointer user_data) {
             while (line != NULL) {
                 unsigned int hex_val;
                 if (sscanf(line, "RX: %x", &hex_val) == 1 || sscanf(line, "RX: 0x%x", &hex_val) == 1) {
-                    
-                    // Crucial: UI modifications must happen on the Main Thread. 
-                    // We structure a dynamic payload to dispatch safely.
-                    struct UpdatePayload {
-                        int index;
-                        unsigned int val;
-                    } *payload = g_new(struct UpdatePayload, 1);
+
+                    UpdatePayload *payload = g_new(UpdatePayload, 1);
                     payload->index = byte_index;
                     payload->val = hex_val;
 
-                    // Idle callback to safely manipulate GTK widgets from a thread
-                    g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, [](gpointer data) -> gboolean {
-                        struct UpdatePayload *p = (struct UpdatePayload *)data;
-                        if (global_rx_widgets) {
-                            char markup[64];
-                            snprintf(markup, sizeof(markup), "<b>0x%02X</b>", p->val);
-                            gtk_label_set_markup(GTK_LABEL(global_rx_widgets->received_labels[p->index]), markup);
-                        }
-                        g_free(p);
-                        return FALSE; // Run once
-                    }, payload, NULL);
+                    // Pass the named function instead of the lambda
+                    g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, update_rx_label_cb, payload, NULL);
 
                     byte_index++;
                     if (byte_index >= 3) byte_index = 0;
@@ -482,8 +486,7 @@ static gpointer windows_serial_thread_func(gpointer user_data) {
                 line = strtok(NULL, "\n");
             }
         }
-        // Sleep slightly to prevent CPU pinning if timeouts are zeroed out
-        g_usleep(10000); 
+        g_usleep(10000);
     }
     return NULL;
 }
