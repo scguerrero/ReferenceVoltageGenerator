@@ -58,14 +58,24 @@ cd ReferenceVoltageGenerator/windows_app
 ```
 Open this directory in your file manager and double-click the executable ReferenceVoltageGenerator.exe.
 
-
 ### How to Compile Natively on Linux
 [Jump to Top](#reference-voltage-generator)
+
+Clone the repository, open it, compile `main.c`, and run it with `./main`.
+```
+git clone https://github.com/scguerrero/ReferenceVoltageGenerator.git
+cd ReferenceVoltageGenerator
+gcc $(pkg-config --cflags gtk4) -o main main.c $(pkg-config --libs gtk4) -lm
+./main
+```
 
 ### How to Cross-Compile on Linux
 [Jump to Top](#reference-voltage-generator)
 
-Enter the `quasi-msys2` directory. Open the shell and compile `main.c` inside the environment.
+Install [quasi-msys2](https://github.com/HolyBlackCat/quasi-msys2) according to the instructions for your Linux distribution in the [Usage](https://github.com/HolyBlackCat/quasi-msys2#usage) section.
+
+When the installation is complete, enter the `quasi-msys2` directory. Open the shell and compile `main.c` inside the environment.
+
 ```
 env/shell.sh # Open the shell
 
@@ -104,8 +114,42 @@ If it runs with readable fonts, then it is safe to run natively on Windows. Alwa
 ### How to Upload Sketch to Adafruit Feather
 [Jump to Top](#reference-voltage-generator)
 
+The GUI is designed to communicate with an Adafruit Feather ESP32-S3 Reverse TFT. Uploading Arduino sketches to the Feather through Arduino IDE is error-prone on Ubuntu Linux, so this project uses [esptool](https://github.com/espressif/esptool) to upload Arduino sketches to the Feather on the command line. Windows users likely will not encounter this issue and can use Arduino IDE to upload sketches to the Feather as normal. 
+
+Arduino IDE can still be used to write/edit sketches for the Feather. Open the file `esp32_voltage_generator.ino` with Arduino IDE and, if applicable, allow the IDE to automatically place the `.ino` inside a folder. Choose the Feather in the board/port dropdown menu next to the Verify/Upload/Debug circle icons. Click Verify to check for syntax errors. Next, in the top ribbon toolbar, click Sketch > Export Compiled Binary. This will generate binary files that can be flashed to the Feather.
+
+Open the folder containing the `.ino` file. It will contain a new subdirectory called `build/esp32.esp32.adafruit_feather_esp32s3_reversetft`. Open that subdirectory. Use `ls` to check for the following files:
+```
+esp32_voltage_generator.ino.bootloader.bin
+esp32_voltage_generator.ino.partitions.bin
+esp32_voltage_generator.ino.bin
+```
+These will be flashed to the Feather using esptool.
+
+Before flashing, put the Feather in ROM bootloader mode by holding the D0 button, clicking the Reset button on the TFT side (still holding D0), then releasing D0. Check that the Feather is bootloader mode by running `lsusb`. If `lsusb` shows a device with the name `Espressif`, then it is ready for flashing. If the device says `Adafruit`, try again before proceeding.
+
+After confirming that the Feather is in ROM bootloader mode, use esptool to flash the three files listed above to the board.
+```
+# Try this first
+esptool --chip esp32s3 --port /dev/ttyACM0 --baud 921600 write_flash -z \
+  0x0 esp32_voltage_generator.ino.bootloader.bin \
+  0x8000 esp32_voltage_generator.ino.partitions.bin \
+  0x10000 esp32_voltage_generator.ino.bin
+  
+# If esptool does not work, try this path instead
+~/.local/bin/esptool.py --chip esp32s3 --port /dev/ttyACM0 --baud 921600 write_flash -z \
+  0x0 esp32_voltage_generator.ino.bootloader.bin \
+  0x8000 esp32_voltage_generator.ino.partitions.bin \
+  0x10000 esp32_voltage_generator.ino.bin
+```
+Click the Reset button on the side opposite of the TFT to boot the newly uploaded sketch.
+
 ### How to Upload Sketch to Arduino Nano
 [Jump to Top](#reference-voltage-generator)
+
+Arduino IDE should work without issue on Linux when uploading to Arduino boards.
+
+Open the file `spi_nano.ino` with Arduino IDE and, if applicable, allow the IDE to automatically place the `.ino` inside a folder. Choose the Arduino Nano in the board/port dropdown menu next to the Verify/Upload/Debug circle icons. Click Verify to check for syntax errors, then click Upload. The Nano will immediately load the new sketch.
 
 
 
