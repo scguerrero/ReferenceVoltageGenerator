@@ -2,6 +2,14 @@
 1. [Initiating Serial Communication](#initiating-serial-communication)
 2. [Entering Voltage Values](#entering-voltage-values)
 3. [SPI Communication](#spi-communication)
+4. [Instructions for Downloading and Executing](#instructions-for-downloading-and-executing)
+	a. [Graphical User Interface](#graphical-user-interface)
+	    1. [How to download just the Windows executable](#how-to-download-just-the-windows-executable)
+	    2. [How to clone the repository](#how-to-clone-the-repository)
+	    3. [How to compile natively on Linux](#how-to-compile-natively-on-linux)
+	    4. [How to cross-compile on Linux to create a Windows executable](#how-to-cross-compile-on-linux-to-create-a-windows-executable)
+	b. [Adafruit Feather ESP32-S3 Reverse TFT](#adafruit-feather-esp32-s3-reverse-tft)
+	c. [Arduino Nano](#arduino-nano)
 
 Reference Voltage Generator is a set of programs in which a user can enter voltage values to a graphical user interface (GUI) and a microcontroller responds to GUI events by sending those voltage values to digital-to-analog converters (DACs). The GUI application in Figure 1 was developed on Linux in C using GTK4. It can be cross-compiled to Windows using Linux as the host machine. The precompiled Windows executable is also available. The GUI was designed to communicate with an Adafruit Feather ESP32-S3 Reverse TFT. The Feather application parses commands received from the GUI and determines if the command intends to send a voltage value to one of the DACs via I2C, or if the command is meant to send bytes to another microcontroller via SPI.
 
@@ -42,5 +50,23 @@ In Figure 5, the user can enter three bytes of data in hexadecimal format. They 
 
 ![SPI section of the GUI where the user can send bytes and view received bytes](images/figure5.png)
 *Figure 5. SPI section of the GUI where the user can send bytes and view received bytes.*
+
+## Instructions for Downloading and Executing
+
+### Graphical User Interface
+
+#### How to download just the Windows executable
+
+#### How to clone the repository
+
+#### How to compile natively on Linux
+
+#### How to cross-compile on Linux to create Windows executable
+
+### Adafruit Feather ESP32-S3 Reverse TFT
+
+### Arduino Nano
+
+
 
 
