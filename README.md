@@ -7,6 +7,7 @@
 - [How to Cross-Compile on Linux](#how-to-cross-compile-on-linux)
 - [How to Upload Sketch to Adafruit Feather](#how-to-upload-sketch-to-adafruit-feather)
 - [How to Upload Sketch to Arduino Nano](#how-to-upload-sketch-to-arduino-nano)
+- [How to Wire Feather to Nano](#how-to-wire-feather-to-nano)
 - [Known Issues](#known-issues)
 
 Reference Voltage Generator is a set of programs in which a user can enter voltage values to a graphical user interface (GUI) and a microcontroller responds to GUI events by sending those voltage values to digital-to-analog converters (DACs). The GUI application in Figure 1 was developed on Linux in C using GTK4. It can be cross-compiled to Windows using Linux as the host machine. The precompiled Windows executable is also available. The GUI was designed to communicate with an Adafruit Feather ESP32-S3 Reverse TFT. The Feather application parses commands received from the GUI and determines if the command intends to send a voltage value to one of the DACs via I2C, or if the command is meant to send bytes to another microcontroller via SPI.
@@ -151,6 +152,24 @@ Click the Reset button on the side opposite of the TFT to boot the newly uploade
 Arduino IDE should work without issue on Linux when uploading sketches to Arduino boards.
 
 Open the file `spi_nano.ino` with Arduino IDE and, if applicable, allow the IDE to automatically place the `.ino` inside of a new folder. Choose the Arduino Nano in the board/port dropdown menu next to the Verify/Upload/Debug circle icons. Click Verify to check for syntax errors, then click Upload. The Nano will immediately load the new sketch.
+
+## How to Wire Feather to Nano
+[Jump to Top](#reference-voltage-generator)
+
+Each row in the table indicates which pins to connect together. SCK on the Feather to D13 on the Arduino, and so on.
+| Feather | Arduino |
+| :--- | :--- |
+| SCK | D13 |
+| MOSI | D11 |
+| MISO | D12 |
+| D5 | D10 |
+| GND | GND |
+
+![Adafruit Feather ESP32-S3 Reverse TFT pinout](images/figure5.png)
+*Figure 6. Adafruit Feather ESP32-S3 Reverse TFT pinout.*
+
+![Arduino Nano pinout](images/figure5.png)
+*Figure 6. Arduino Nano pinout.*
 
 ## Known Issues
 [Jump to Top](#reference-voltage-generator)
