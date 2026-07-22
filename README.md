@@ -165,10 +165,10 @@ Each row in the table indicates which pins to connect together. SCK on the Feath
 | D5 | D10 |
 | GND | GND |
 
-![Adafruit Feather ESP32-S3 Reverse TFT pinout](images/figure5.png)
+![Adafruit Feather ESP32-S3 Reverse TFT pinout](images/figure6.png)
 *Figure 6. Adafruit Feather ESP32-S3 Reverse TFT pinout.*
 
-![Arduino Nano pinout](images/figure5.png)
+![Arduino Nano pinout](images/figure7.png)
 *Figure 6. Arduino Nano pinout.*
 
 ## Known Issues
