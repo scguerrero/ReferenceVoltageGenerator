@@ -168,7 +168,7 @@ bool dacInit(uint8_t bank, uint8_t chip) {
 }
 
 float codeToVoltage(uint16_t code) {
-  return ((float)code / 65536.0f) * 2.0f; // this math is SO incorrect
+  return ((float)code / 65536.0f) * 5.0f;
 }
 
 // =============================================================================
@@ -304,7 +304,7 @@ void loop() {
     tft.println("VOLTAGE:");
     tft.setTextColor(ST77XX_WHITE);
     tft.setCursor(0, 100);
-    tft.print(voltage);
+    tft.print(voltage, 4);
     tft.print(" V");
     
   }

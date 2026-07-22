@@ -27,6 +27,24 @@ gcc $(pkg-config --cflags gtk4) -o main main.c $(pkg-config --libs gtk4) -lm
 #define VOLTAGE_MAX   5.0
 #define VOLTAGE_STEP  0.0001   /* 100 µV */
 
+// DAC70501 registers
+const uint8_t REG_SYNC = 0x01;
+const uint8_t REG_CONFIG = 0x03;
+const uint8_t REG_GAIN = 0x04;
+const uint8_t REG_TRIGGER = 0x05;
+const uint8_t REG_DAC = 0x08;
+
+// DAC count
+const uint8_t NUM_BANKS = 3;
+const uint8_t DACS_PER_BANK = 4;
+const uint8_t TOTAL_DACS = NUM_BANKS * DACS_PER_BANK;
+
+uint16_t voltageToCode(float v) {
+  if (v <= 0.0f) return 0x0000;
+  if (v >= VOLTAGE_MAX) return 0xFFFF;
+  uint32_t code = (uint32_t)(v / VOLTAGE_MAX * 65536.0f + 0.5f);
+  return (uint16_t)(code > 0xFFFF ? 0xFFFF : code);
+}
 
 // Keep a global or static descriptor variable for the ongoing session
 static serial_fd_t active_serial_fd = SERIAL_INVALID;
@@ -240,12 +258,22 @@ static serial_fd_t open_serial_from_conn(ConnectData *conn) {
     return fd;
 }
 
-// Builds and sends the "<off> <dac> <voltage>\n" command.
-static void send_voltage_command(serial_fd_t fd, int off, int channel, double value) {
-    char msg[32];
-    snprintf(msg, sizeof(msg), "1 %d %d %.4f\n", off, channel, value);
-    g_print("Sending: %s", msg); // keep terminal echo for debugging
-    serial_write(fd, msg, strlen(msg));
+// Sends 5 bytes: bank, chip, register, high half of value, low half of value.
+static void send_voltage_command(serial_fd_t fd, uint8_t reg, int channel, uint16_t value) {
+    uint8_t bank = channel / DACS_PER_BANK;
+    uint8_t chip = channel % DACS_PER_BANK;
+    uint8_t high = (uint8_t)(value >> 8);
+    uint8_t low = (uint8_t)(value & 0xFF);
+    
+    uint8_t msg[5];
+    msg[0] = bank;
+    msg[1] = chip;
+    msg[2] = reg;
+    msg[3] = high;
+    msg[4] = low;
+
+    g_print("Sending: %02X %02X %02X %02X %02X\n", msg[0],msg[1],msg[2],msg[3],msg[4]);
+    serial_write(fd, (const char *)msg, sizeof(msg));
 }
 
 // Updates an off/on toggle button's label and CSS name to match its state.
@@ -342,17 +370,13 @@ static void on_update_clicked(GtkButton *button, gpointer user_data) {
     GtkEntry *entry = GTK_ENTRY(data->entry);
 
     double value = atof(gtk_editable_get_text(GTK_EDITABLE(entry)));
+    uint16_t v = voltageToCode(value);
 
-    //serial_fd_t fd = open_serial_from_conn(data->conn);
-    //if (serial_is_invalid(fd)) return;
-
-    if (serial_is_invalid(active_serial_fd)) {
-        g_printerr("Error: Cannot send. Port not connected!\n");
-        return;
-    }
-    send_voltage_command(active_serial_fd, 0, CH, value);
-
-    //serial_close(fd);
+    //if (serial_is_invalid(active_serial_fd)) {
+    //    g_printerr("Error: Cannot send. Port not connected!\n");
+    //    return;
+    //}
+    send_voltage_command(active_serial_fd, REG_DAC, CH, v);
 }
 
 // Power off the channel
@@ -364,14 +388,21 @@ static void on_off_clicked(GtkToggleButton *button, gpointer user_data) {
 
     gboolean is_on = gtk_toggle_button_get_active(button);
     set_off_button_visual(GTK_WIDGET(button), is_on);
-    int OFF = is_on ? 0 : 1; // 0 = DAC powered on, 1 = DAC powered off
+    //int OFF = is_on ? 0 : 1; // 0 = DAC powered on, 1 = DAC powered off
     
-    if (serial_is_invalid(active_serial_fd)) {
-        g_printerr("Error: Cannot send. Port not connected!\n");
-        return;
+    uint16_t v;
+    if (is_on == TRUE) {
+        v = 0x0000; // DAC power on
+    } else {
+        v = 0x0001; // DAC power off
     }
 
-    send_voltage_command(active_serial_fd, OFF, CH, value);
+    //if (serial_is_invalid(active_serial_fd)) {
+    //    g_printerr("Error: Cannot send. Port not connected!\n");
+    //    return;
+    //}
+
+    send_voltage_command(active_serial_fd, REG_CONFIG, CH, v);
 }
 
 static void on_entry_activate(GtkEntry *entry, gpointer user_data) {
@@ -551,8 +582,8 @@ static void on_alloff_clicked(GtkButton *button, gpointer user_data) {
         // Update the UI state without triggering the per-channel signal
         set_toggle_silently(tb, data->off_data[i], FALSE);
 
-        // Execute the logic: Send the OFF command over serial
-        send_voltage_command(fd, 1, data->channel_values[i], value);
+        // Power off each DAC
+        send_voltage_command(fd, REG_CONFIG, data->channel_values[i], 0x0001);
     }
 
     serial_close(fd);
@@ -578,8 +609,9 @@ static void on_updateall_clicked(GtkButton *button, gpointer user_data) {
     for (int i = 0; i < 12; i++) {
         GtkEntry *entry = GTK_ENTRY(data->entry_boxes[i]);
         double value    = atof(gtk_editable_get_text(GTK_EDITABLE(entry)));
+        uint16_t v = voltageToCode(value);
 
-        send_voltage_command(fd, 0, data->channel_values[i], value);
+        send_voltage_command(fd, REG_DAC, data->channel_values[i], v);
     }
 
     serial_close(fd);
